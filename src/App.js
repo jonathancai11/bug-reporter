@@ -11,7 +11,9 @@ function App() {
     <div className="App">
       <Layout style={{minHeight: "100vh"}}>
         <Header className="header">
+          <div className="logo">
           <h1 style={{color: "white", display: "inline"}}>Bug Reporter</h1>
+          </div>
           <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} style={{display: "inline-block"}}>
             <Menu.Item key="1">Dashboard</Menu.Item>
             <Menu.Item key="2">Reports</Menu.Item>
