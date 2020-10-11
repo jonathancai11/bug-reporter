@@ -34,6 +34,7 @@ export default function Reports() {
       return ({
         ...oldData,
         selectedTag: newTag,
+        selectedReport: null,
       })
     })
   }
@@ -96,7 +97,7 @@ export default function Reports() {
         <Content style={{ padding: '24px', minHeight: 600, backgroundColor: "white" }}>
           {
             selectedReport && <div>
-              <img src={selectedReport.canvas} />
+              <img alt="report screenshot" src={selectedReport.canvas} />
             </div>
           }
         </Content>
