@@ -4,3 +4,12 @@
 .App {
   min-height: 100vh;
 }
+
+.logo {
+  padding-right: 20px;
+}
+
+.logo:hover {
+  opacity: .8;
+  cursor: pointer;
+}
