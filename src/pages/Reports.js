@@ -5,32 +5,41 @@ import { FieldTimeOutlined, ChromeFilled, AppleFilled, LaptopOutlined, FrownOutl
 //   FieldTimeOutlined, IeOutlined, ChromeFilled, AppleFilled, WindowsOutlined, AndroidOutlined,
 //   LaptopOutlined, FrownOutlined, SmileOutlined, MobileOutlined
 // } from '@ant-design/icons';
+import { Select } from 'antd';
 import { getAllReports } from '../util/api';
-import { getHM, groupByMDY } from '../util/util';
+import { getHM, groupByMDY, groupByTag } from '../util/util';
 
+const { Option } = Select;
 const { SubMenu } = Menu;
 const { Content, Sider } = Layout;
 
 
-
 export default function Reports() {
 
-  let [{ reports, selectedReport }, setReportData] = useState({})
+  let [{ reportsByTag, selectedReport, selectedTag, tags }, setReportData] = useState({})
 
   useEffect(() => {
     getAllReports().then((res) => {
       let { data } = res;
+      let reportsByTag = groupByTag(data.reports);
+      let tags = Object.keys(reportsByTag)
       setReportData({
         ...data,
-        selectedReport: [...data.reports].reverse()[0],
+        tags: tags,
+        reportsByTag: reportsByTag,
       });
     }).catch((error) => {
-      window.alert(error);
+      // window.alert(error);
     });
   }, []);
 
-  if (selectedReport) {
-    console.log(getHM(new Date(selectedReport.date_created)));
+  function handleTagChange(newTag) {
+    setReportData(oldData => {
+      return ({
+        ...oldData,
+        selectedTag: newTag,
+      })
+    })
   }
 
   return (
@@ -39,6 +48,13 @@ export default function Reports() {
         <Breadcrumb.Item>Home</Breadcrumb.Item>
         <Breadcrumb.Item>Reports</Breadcrumb.Item>
       </Breadcrumb>
+
+      <Select defaultValue={selectedTag} placeholder="Select a tag" style={{ width: 200 }} onChange={handleTagChange}>
+        {
+          tags && tags.map((tag, i) => <Option key={i} value={tag}>{tag}</Option>)
+        }
+      </Select>
+
       <Layout className="site-layout-background" style={{ padding: '24px 0' }}>
         <Sider className="site-layout-background" width={300}>
           <Menu
@@ -48,10 +64,10 @@ export default function Reports() {
             style={{ height: '100%' }}
           >
             {
-              reports && Object.keys(groupByMDY(reports)).map((date) =>
+              reportsByTag && selectedTag && Object.keys(groupByMDY(reportsByTag[selectedTag])).map((date) =>
                 <SubMenu key="sub1" icon={<FieldTimeOutlined />} title={date}>
                   {
-                    groupByMDY(reports)[date].reverse().map((report, i) => {
+                    groupByMDY(reportsByTag[selectedTag])[date].reverse().map((report, i) => {
                       var timeString = getHM(new Date(report.date_created));
                       return (
                         <Menu.Item
@@ -70,7 +86,7 @@ export default function Reports() {
                               <LaptopOutlined />
                               <FrownOutlined />
                             </>}
-                          key={i + 1}>{timeString}
+                          key={i + 2}>{timeString}
                         </Menu.Item>
                       );
                     }
