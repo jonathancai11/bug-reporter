@@ -6,45 +6,32 @@ import { FieldTimeOutlined, ChromeFilled, AppleFilled, LaptopOutlined, FrownOutl
 //   LaptopOutlined, FrownOutlined, SmileOutlined, MobileOutlined
 // } from '@ant-design/icons';
 import { getAllReports } from '../util/api';
+import { getHM, groupByMDY } from '../util/util';
 
 const { SubMenu } = Menu;
 const { Content, Sider } = Layout;
 
-function getMDY(dt) {
-  return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear();
-}
-
-function getHM(dt) {
-  return dt.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: 'numeric' });
-}
-
-function groupByMDY(reports) {
-  // https://www.robinwieruch.de/javascript-groupby
-  return reports.reduce((acc, value) => {
-    let date = getMDY(new Date(value.date_created));
-    // Group initialization
-    if (!acc[date]) {
-      acc[date] = [];
-    }
-    // Grouping
-    acc[date].push(value);
-    return acc;
-  }, {});
-}
 
 
 export default function Reports() {
 
-  let [{ reports }, setReportData] = useState({})
+  let [{ reports, selectedReport }, setReportData] = useState({})
 
   useEffect(() => {
     getAllReports().then((res) => {
       let { data } = res;
-      setReportData(data);
+      setReportData({
+        ...data,
+        selectedReport: [...data.reports].reverse()[0],
+      });
     }).catch((error) => {
       window.alert(error);
     });
   }, []);
+
+  if (selectedReport) {
+    console.log(getHM(new Date(selectedReport.date_created)));
+  }
 
   return (
     <Content style={{ padding: '0 50px' }}>
@@ -64,15 +51,33 @@ export default function Reports() {
               reports && Object.keys(groupByMDY(reports)).map((date) =>
                 <SubMenu key="sub1" icon={<FieldTimeOutlined />} title={date}>
                   {
-                    groupByMDY(reports)[date].map((report, i) => {
+                    groupByMDY(reports)[date].reverse().map((report, i) => {
                       var timeString = getHM(new Date(report.date_created));
                       return (
-                        <Menu.Item icon={<><ChromeFilled /><AppleFilled /><LaptopOutlined /><FrownOutlined /></>} key={i}>{timeString}</Menu.Item>
+                        <Menu.Item
+                          onClick={() => {
+                            setReportData(oldData => {
+                              return ({
+                                ...oldData,
+                                selectedReport: report,
+                              })
+                            })
+                          }}
+                          icon={
+                            <>
+                              <ChromeFilled />
+                              <AppleFilled />
+                              <LaptopOutlined />
+                              <FrownOutlined />
+                            </>}
+                          key={i + 1}>{timeString}
+                        </Menu.Item>
                       );
                     }
                     )
                   }
-                </SubMenu>)
+                </SubMenu>
+              )
             }
             {/* <SubMenu key="sub1" icon={<FieldTimeOutlined />} title="Today">
               <Menu.Item icon={<><ChromeFilled /><AppleFilled /><LaptopOutlined /><FrownOutlined /></>} key="1">8:00 AM</Menu.Item>
@@ -82,9 +87,12 @@ export default function Reports() {
             </SubMenu> */}
           </Menu>
         </Sider>
-        <Content style={{ padding: '24px', minHeight: 280, backgroundColor: "white" }}>
-          <h1>This is some content.</h1>
-          <p>This is some content.</p>
+        <Content style={{ padding: '24px', minHeight: 600, backgroundColor: "white" }}>
+          {
+            selectedReport && <div>
+              <img src={selectedReport.canvas} />
+            </div>
+          }
         </Content>
       </Layout>
     </Content>
