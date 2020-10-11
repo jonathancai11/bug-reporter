@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import { FieldTimeOutlined, ChromeFilled, AppleFilled, LaptopOutlined, FrownOutlined } from '@ant-design/icons';
-// import {
-//   FieldTimeOutlined, IeOutlined, ChromeFilled, AppleFilled, WindowsOutlined, AndroidOutlined,
-//   LaptopOutlined, FrownOutlined, SmileOutlined, MobileOutlined
-// } from '@ant-design/icons';
 import { Select } from 'antd';
 import { getAllReports } from '../util/api';
 import { getHM, groupByMDY, groupByTag } from '../util/util';
@@ -95,12 +91,6 @@ export default function Reports() {
                 </SubMenu>
               )
             }
-            {/* <SubMenu key="sub1" icon={<FieldTimeOutlined />} title="Today">
-              <Menu.Item icon={<><ChromeFilled /><AppleFilled /><LaptopOutlined /><FrownOutlined /></>} key="1">8:00 AM</Menu.Item>
-              <Menu.Item icon={<><ChromeFilled /><AppleFilled /><LaptopOutlined /><SmileOutlined /></>} key="2">9:15 AM</Menu.Item>
-              <Menu.Item icon={<><IeOutlined /><WindowsOutlined /><MobileOutlined /><SmileOutlined /></>} key="3">10:11 AM</Menu.Item>
-              <Menu.Item icon={<><ChromeFilled /><AndroidOutlined /><MobileOutlined /><SmileOutlined /></>} key="4">12:00 PM</Menu.Item>
-            </SubMenu> */}
           </Menu>
         </Sider>
         <Content style={{ padding: '24px', minHeight: 600, backgroundColor: "white" }}>
