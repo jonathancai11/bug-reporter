@@ -12,7 +12,7 @@ function App() {
     <div className="App">
       <Layout style={{minHeight: "100vh"}}>
         <Header className="header">
-          <img className="logo" src={logo} height={24}/>
+          <a href="/"><img alt="bug reporter logo" className="logo" src={logo} height={24}/></a>
           <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} style={{display: "inline-block"}}>
             <Menu.Item key="2">Reports</Menu.Item>
           </Menu>
